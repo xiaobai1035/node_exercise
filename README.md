@@ -1,0 +1,1 @@
+安装模块：nodemon，cors，pm2， vue_cli, express
