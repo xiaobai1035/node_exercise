@@ -1,56 +1,95 @@
 <template>
-  <el-container style="height: 100vh; border: 1px solid #eee">
-    <el-aside width="200px" style="background-color: rgb(238, 241, 246)">
-      <el-menu router :default-openeds="['1']">
-        <el-submenu index="1">
-          <template slot="title"><i class="el-icon-tickets"></i>内容管理</template>
-          <el-menu-item index="/articles/index">文章列表</el-menu-item>
-          <el-menu-item index="/articles/create">新建文章</el-menu-item>
-        </el-submenu>
-      </el-menu>
-    </el-aside>
-    
-    <el-container>
-      <el-header style="text-align: right; font-size: 12px">
-        <el-dropdown>
-          <i class="el-icon-setting" style="margin-right: 15px"></i>
-          <el-dropdown-menu slot="dropdown">
-            <el-dropdown-item>查看</el-dropdown-item>
-            <el-dropdown-item>新增</el-dropdown-item>
-            <el-dropdown-item>删除</el-dropdown-item>
-          </el-dropdown-menu>
-        </el-dropdown>
-        <span>王小虎</span>
-      </el-header>
-      
-      <el-main>
-        <router-view></router-view>
-      </el-main>
-    </el-container>
-  </el-container>
+ <el-container>
+    <el-form @submit.native.prevent="saveArticle" :model="ruleForm2" status-icon :rules="rules2" ref="ruleForm2">
+        <el-row>
+          <el-col :span="12">
+            <el-input v-model="ruleForm2.username" placeholder="用户名/邮箱/电话" auto-complete="on" clearable></el-input>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="12">
+            <el-input type="password" v-model="ruleForm2.password" auto-complete="off" placeholder="密码"></el-input>
+          </el-col>
+        </el-row>
+        <el-form-item>
+            <el-button type="primary" native-type="submit">提交</el-button>
+            <el-button @click="resetForm('ruleForm2')">重置</el-button>
+        </el-form-item>
+    </el-form>
+ </el-container>
 </template>
-<style>
-  html, body {
-    padding: 0;
-    margin: 0;
-  }
-  .el-header {
-    background-color: #B3C0D1;
-    color: #333;
-    line-height: 60px;
-  }
-  
-  .el-aside {
-    color: #333;
-  }
-</style>
 
 <script>
   export default {
-      data() {
-        return {
-            
+    data() {
+      var checkAge = (rule, value, callback) => {
+        if (!value) {
+          return callback(new Error('年龄不能为空'));
         }
+        setTimeout(() => {
+          if (!Number.isInteger(value)) {
+            callback(new Error('请输入数字值'));
+          } else {
+            if (value < 18) {
+              callback(new Error('必须年满18岁'));
+            } else {
+              callback();
+            }
+          }
+        }, 1000);
+      };
+      var validatePass = (rule, value, callback) => {
+        if (value === '') {
+          callback(new Error('请输入密码'));
+        } else {
+          if (this.ruleForm2.checkPass !== '') {
+            this.$refs.ruleForm2.validateField('checkPass');
+          }
+          callback();
+        }
+      };
+      var validatePass2 = (rule, value, callback) => {
+        if (value === '') {
+          callback(new Error('请再次输入密码'));
+        } else if (value !== this.ruleForm2.pass) {
+          callback(new Error('两次输入密码不一致!'));
+        } else {
+          callback();
+        }
+      };
+      return {
+        ruleForm2: {
+          pass: '',
+          checkPass: '',
+          age: ''
+        },
+        rules2: {
+          pass: [
+            { validator: validatePass, trigger: 'blur' }
+          ],
+          checkPass: [
+            { validator: validatePass2, trigger: 'blur' }
+          ],
+          age: [
+            { validator: checkAge, trigger: 'blur' }
+          ]
+        }
+      };
+    },
+    methods: {
+      submitForm(formName) {
+        this.$refs[formName].validate((valid) => {
+          if (valid) {
+            alert('submit!');
+          } else {
+            console.log('error submit!!');
+            return false;
+          }
+        });
+      },
+      resetForm(formName) {
+        this.$refs[formName].resetFields();
       }
-  };
+    }
+  }
 </script>

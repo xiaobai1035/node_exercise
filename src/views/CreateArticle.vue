@@ -29,7 +29,7 @@
             message: '新建数据成功',
             type: 'success'
           });
-          this.$router.push('/articles/index')
+          this.$router.push('/articles/list')
         });
       }
     }

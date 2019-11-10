@@ -34,7 +34,7 @@
                     message: '编辑数据成功',
                     type: 'success'
                 });
-                this.$router.push('/articles/index')
+                this.$router.push('/articles/list')
             });
         }
     },
