@@ -90,8 +90,8 @@ app.get('/api/users', async(req, res) => {
 app.get('/api/profile', async(req, res) => {
     const raw = String(req.headers.authorization)
     const {id} = jwt.verify(raw, SECRET)
-    const users = await User.findById(id)
-    res.send(users)
+    const user = await User.findById(id)
+    res.send(user)
 })
 
 app.listen(3001, () => {

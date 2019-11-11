@@ -4,15 +4,16 @@ import ArticleIndex from '../views/ArticleIndex.vue'
 import ListArticle from '../views/ListArticle.vue'
 import CreateArticle from '../views/CreateArticle.vue'
 import EditArticle from '../views/EditArticle.vue'
+import Login from '../views/Login.vue'
+import Register from '../views/Register.vue'
 
 Vue.use(VueRouter)
 
 const routes = [
-  // {
-  //   path: '/',
-  //   name: 'home',
-  //   redirect: '/articles/index'
-  // },
+  {
+    path: '/',
+    redirect: '/login'
+  },
   {
     path: '/articles/index',
     name: 'index-article',
@@ -32,6 +33,16 @@ const routes = [
     path: '/articles/:id/edit',
     name: 'edit-article',
     component: EditArticle
+  },
+  {
+    path: '/login',
+    name: 'login',
+    component: Login
+  },
+  {
+    path: '/register',
+    name: 'register',
+    component: Register
   }
 ]
 

@@ -18,7 +18,9 @@ const User = mongoose.model('User', new mongoose.Schema({
         set(val) {
             return require('bcrypt').hashSync(val, 10)
         }
-    }
+    },
+    phone: {type: String},  // 电话号验证
+    mail: {type: String}    // mail验证
 }))
 
 
