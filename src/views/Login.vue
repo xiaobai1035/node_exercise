@@ -22,6 +22,9 @@
               <el-button type="primary" native-type="submit">登录</el-button>
               <el-button @click="resetForm('userForm')">重置</el-button>
             </el-form-item>
+            <el-form-item style="text-align: left;margin-bottom: 0;">
+              <el-button type="text" size="mini" @click="goRegister">注册账号</el-button>
+            </el-form-item>
           </el-form>
         </el-col>
       </el-row>
@@ -39,10 +42,21 @@ export default {
   methods: {
     submitForm() {
       // 校验用户信息
-      this.$router.push('/Register')
+      this.$http.post('/login', this.userForm).then(res => {
+        console.log(res.data)
+        this.$message({
+            message: res.data.user.username + '用户登录成功',
+            type: 'success'
+          });
+          // 成功、失败及提交时验证 TODO
+          // this.$router.push('/login')
+      })
     },
     resetForm(formName) {
       this.$refs[formName].resetFields();
+    },
+    goRegister() {
+      this.$router.push('/Register')
     }
   }
 }
