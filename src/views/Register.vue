@@ -8,7 +8,7 @@
     <el-main style="padding: 0;">
       <el-row type="flex" justify="center">
         <el-col :span="10">
-          <el-form @submit.native.prevent="submitForm" :model="userForm" status-icon ref="userForm">
+          <el-form @submit.native.prevent="submitForm('userForm')" :rules="rules" :model="userForm" status-icon ref="userForm">
             <el-form-item prop="username">
               <el-input v-model="userForm.username" auto-complete="on" placeholder="用户名" clearable></el-input>
             </el-form-item>
@@ -41,21 +41,74 @@
 <script>
 export default {
   data() {
+    var validatePhone = (rule, value, callback) => {
+      // let reg = /^1[0-9]{10}$/
+      if (value === '' || value.length !== 11/* || !reg.test(value)*/) {
+        callback(new Error('请输入正确的联系方式'));
+      } else {
+        callback();
+      }
+    };
+    var validatePass = (rule, value, callback) => {
+      if (value === '') {
+        callback(new Error('请再次输入密码'));
+      } else if (value !== this.userForm.password) {
+        callback(new Error('两次输入密码不一致!'));
+      } else {
+        callback();
+      }
+    };
     return {
-      userForm: {}
+      userForm: {
+        username: '',
+        phone: '',
+        mail: '',
+        password: '',
+        passwordConfirm: ''
+      },
+      rules: {
+        username: [
+          { required: true, message: '请输入用户名称', trigger: 'blur' }
+        ],
+        phone: [
+          { validator: validatePhone, trigger: 'blur' }
+        ],
+        mail: [
+          { required: true, message: '请输入邮箱地址', trigger: 'blur' },
+          { type: 'email', message: '请输入正确的邮箱地址', trigger: ['blur', 'change'] }
+        ],
+        password: [
+          { required: true, message: '请输入登录密码', trigger: 'blur' }
+        ],
+        passwordConfirm: [
+          { validator: validatePass, trigger: 'blur' }
+        ]
+      }
     };
   },
   methods: {
-    submitForm() {
-        this.$http.post('/register', this.userForm).then(res => {
-          // 成功、失败及提交时验证 TODO
-          console.log(res.data)
-          this.$message({
-            message: '新建用户成功',
-            type: 'success'
-          });
-          this.$router.push('/login')
-        });
+    submitForm(formName) {
+      this.$refs[formName].validate((valid) => {
+        if (valid) {
+          this.$http.post('/register', this.userForm).then(res => {
+            // 成功、失败及提交时验证 TODO
+            console.log(res.data)
+            this.$message({
+              message: '新建用户成功',
+              type: 'success'
+            });
+            this.$router.push('/login')
+          }).catch(err => {
+            console.log(err)
+            this.$message({
+              message: '注册失败',
+              type: 'warning'
+            });
+          })
+        } else {
+          return false;
+        }
+      });
     },
     resetForm(formName) {
       this.$refs[formName].resetFields();
