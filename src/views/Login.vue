@@ -57,7 +57,7 @@ export default {
               message: res.data.user.username + '用户登录成功',
               type: 'success'
             });
-            this.$router.push('/articles')
+            this.$router.push({path: '/articles', query: {username: res.data.user.username}}) 
           }).catch(err => {
             if (err) {
               this.$message({
