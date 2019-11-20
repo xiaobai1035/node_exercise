@@ -8,9 +8,9 @@
     <el-main style="padding: 0;">
       <el-row type="flex" justify="center">
         <el-col :span="10">
-          <el-form @submit.native.prevent="submitForm" :model="userForm" status-icon ref="userForm">
+          <el-form @submit.native.prevent="submitForm('userForm')" :model="userForm" :rules="rules" status-icon ref="userForm">
             <el-form-item prop="username">
-              <el-input v-model="userForm.username" auto-complete="on" placeholder="用户名/手机/邮箱" clearable></el-input>
+              <el-input v-model="userForm.username" auto-complete="on" placeholder="用户名" clearable></el-input>
             </el-form-item>
             <el-form-item prop="password">
               <el-input type="password" v-model="userForm.password" auto-complete="off" placeholder="密码" clearable></el-input>
@@ -36,21 +36,41 @@
 export default {
   data() {
     return {
-      userForm: {}
+      userForm: {},
+      rules: {
+        username: [
+          { required: true, message: '请输入用户名称', trigger: 'blur' }
+        ],
+        password: [
+          { required: true, message: '请输入登录密码', trigger: 'blur' }
+        ]
+      }
     };
   },
   methods: {
-    submitForm() {
-      // 校验用户信息
-      this.$http.post('/login', this.userForm).then(res => {
-        console.log(res.data)
-        this.$message({
-            message: res.data.user.username + '用户登录成功',
-            type: 'success'
-          });
-          // 成功、失败及提交时验证 TODO
-          // this.$router.push('/login')
-      })
+    submitForm(formName) {
+      this.$refs[formName].validate((valid) => {
+        if (valid) {
+          // 校验用户信息
+          this.$http.post('/login', this.userForm).then(res => {
+            this.$message({
+              message: res.data.user.username + '用户登录成功',
+              type: 'success'
+            });
+            this.$router.push('/articles')
+          }).catch(err => {
+            if (err) {
+              this.$message({
+                message: '请输入正确的用户名和密码',
+                type: 'warning'
+              });
+            }
+            return false;
+          })
+        } else {
+          return false;
+        }
+      });
     },
     resetForm(formName) {
       this.$refs[formName].resetFields();
