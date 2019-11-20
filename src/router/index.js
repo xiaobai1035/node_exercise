@@ -7,6 +7,11 @@ import EditArticle from '../views/EditArticle.vue'
 import Login from '../views/Login.vue'
 import Register from '../views/Register.vue'
 
+const originalPush = VueRouter.prototype.push;
+VueRouter.prototype.push = function push(location) {
+    return originalPush.call(this, location).catch(err => err);
+};
+
 Vue.use(VueRouter)
 
 const routes = [
@@ -15,24 +20,30 @@ const routes = [
     redirect: '/login'
   },
   {
-    path: '/articles/index',
+    path: '/articles',
     name: 'index-article',
-    component: ArticleIndex
-  },
-  {
-    path: '/articles/create',
-    name: 'create-article',
-    component: CreateArticle
-  },
-  {
-    path: '/articles/list',
-    name: 'list-article',
-    component: ListArticle
-  },
-  {
-    path: '/articles/:id/edit',
-    name: 'edit-article',
-    component: EditArticle
+    component: ArticleIndex,
+    children: [
+      {
+        path: '/',
+        redirect: '/articles/list'
+      },
+      {
+        path: '/articles/create',
+        name: 'create-article',
+        component: CreateArticle
+      },
+      {
+        path: '/articles/list',
+        name: 'list-article',
+        component: ListArticle
+      },
+      {
+        path: '/articles/:id/edit',
+        name: 'edit-article',
+        component: EditArticle
+      }
+    ]
   },
   {
     path: '/login',
