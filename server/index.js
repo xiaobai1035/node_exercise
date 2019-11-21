@@ -17,7 +17,23 @@ app.get('/', async(req, res) => {
 
 // 新增文章
 app.post('/api/articles', async(req, res) => {
-    const article = await Article.create(req.body);
+    if (!req.headers.authorization) {
+        return res.status(500).send({
+            msg: '无权限访问'
+        })
+    }
+    const raw = String(req.headers.authorization)
+    const {id} = jwt.verify(raw, SECRET)
+    const user = await User.findById(id)
+    if (!user) {
+        return res.status(422).send({
+            msg: '认证不通过'
+        })
+    }
+
+    var articleContent = req.body;
+    articleContent.user_id = user._id;
+    const article = await Article.create(articleContent);
     res.send(article)
 })
 
@@ -39,7 +55,7 @@ app.get('/api/articles/:id', async(req, res) => {
     res.send(article)
 })
 
-// 保存文章
+// 更新文章
 app.put('/api/articles/:id', async(req, res) => {
     const article = await Article.findByIdAndUpdate(req.params.id, req.body)
     res.send(article)
@@ -66,7 +82,7 @@ app.post('/api/login', async(req, res) => {
         user.password
     )
     if (!isPasswordValid) {
-        return res.status(422).send({
+        return res.status(423).send({
             msg: '密码无效'
         })
     }
@@ -91,6 +107,11 @@ app.get('/api/profile', async(req, res) => {
     const raw = String(req.headers.authorization)
     const {id} = jwt.verify(raw, SECRET)
     const user = await User.findById(id)
+    if (!user) {
+        return res.status(422).send({
+            msg: '用户不存在'
+        })
+    }
     res.send(user)
 })
 
