@@ -24,12 +24,22 @@
     },
     methods: {
       saveArticle() {
-        this.$http.post('articles', this.article).then(() => {
+        this.$http.post('articles', this.article, {
+          headers: {
+            'content-type': 'application/json',
+            "authorization": localStorage.token
+          }
+        }).then(() => {
           this.$message({
             message: '新建数据成功',
             type: 'success'
           });
           this.$router.push('/articles/list')
+        }).catch(err => {
+          if (err) {
+              return false;
+            }
+            return false;
         });
       }
     }
