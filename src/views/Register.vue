@@ -131,7 +131,7 @@ export default {
   h1 {
     margin: 0;
   }
-  .el-form {
+  #registerPage .el-form {
     border: 1px solid #DCDFE6;
     border-radius: 5px;
     padding: 2vh;
