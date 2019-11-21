@@ -57,6 +57,8 @@ export default {
               message: res.data.user.username + '用户登录成功',
               type: 'success'
             });
+            localStorage.token = res.data.token;
+            console.log(localStorage.token)
             this.$router.push({path: '/articles', query: {username: res.data.user.username}}) 
           }).catch(err => {
             if (err) {
@@ -93,7 +95,7 @@ export default {
   h1 {
     margin: 0;
   }
-  .el-form {
+  #indexPage .el-form {
     border: 1px solid #DCDFE6;
     border-radius: 5px;
     padding: 2vh;
