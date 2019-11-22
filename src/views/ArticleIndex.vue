@@ -12,15 +12,8 @@
     
     <el-container>
       <el-header style="text-align: right; font-size: 12px">
-        <el-dropdown>
-          <i class="el-icon-setting" style="margin-right: 15px"></i>
-          <el-dropdown-menu slot="dropdown">
-            <el-dropdown-item>查看</el-dropdown-item>
-            <el-dropdown-item>新增</el-dropdown-item>
-            <el-dropdown-item>删除</el-dropdown-item>
-          </el-dropdown-menu>
-        </el-dropdown>
-        <span>{{username}}</span>
+        <span style="margin-right: 10px;">{{username}}</span>
+        <el-button type="danger" size="mini" @click="logout()">退出</el-button>
       </el-header>
       
       <el-main>
@@ -50,6 +43,12 @@
     data() {
       return {
         username: this.$route.query.username
+      }
+    },
+    methods: {
+      logout() {
+        localStorage.token = "";
+        this.$router.push('/') 
       }
     }
   };
