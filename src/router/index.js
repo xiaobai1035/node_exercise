@@ -6,6 +6,7 @@ import CreateArticle from '../views/CreateArticle.vue'
 import EditArticle from '../views/EditArticle.vue'
 import Login from '../views/Login.vue'
 import Register from '../views/Register.vue'
+import ArticleDetail from '../views/ArticleDetail.vue'
 
 const originalPush = VueRouter.prototype.push;
 VueRouter.prototype.push = function push(location) {
@@ -42,6 +43,11 @@ const routes = [
         path: '/articles/:id/edit',
         name: 'edit-article',
         component: EditArticle
+      },
+      {
+        path: '/articles/:id/detail',
+        name: 'article-detail',
+        component: ArticleDetail
       }
     ]
   },
