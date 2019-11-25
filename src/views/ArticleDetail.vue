@@ -1,46 +1,23 @@
 <template>
-    <div style="overflow:auto">
-        <ul>
-            <li v-for="item in articleList" :key='item._id' style="list-style-type:none;">
-                <el-row>
-                    <el-link :underline="false" style="color: black;" @click="handleDetail(item._id)">
-                        <h1><strong>
-                            {{ item.title }}
-                        </strong></h1>
-                    </el-link>
-                </el-row>
-                <el-row>
-                    <el-col :sm="12" :md="16">
-                        头像
-                    </el-col>
-                    <el-col :sm="12" :md="8" style="text-align: right;">
-                        <el-link :underline="false" icon="el-icon-view" v-if="item.article_view_count" type="info">
-                            <span style="color: #3399ea;">
-                                {{item.article_view_count}}
-                            </span>
-                        </el-link>
-                        <el-divider direction="vertical" class="font-dicider" v-if="item.article_comment_count"></el-divider>
-                        <el-link :underline="false" icon="el-icon-chat-dot-round" v-if="item.article_comment_count" type="info">
-                            <span style="color: #3399ea;">
-                                {{item.article_comment_count}}
-                            </span>
-                        </el-link>
-                        <el-divider direction="vertical" v-if="item.article_like_count"></el-divider>
-                        <el-link :underline="false" icon="el-icon-thumb" v-if="item.article_like_count" type="info">
-                            <span style="color: #3399ea;">
-                                {{item.article_like_count}}
-                            </span>
-                        </el-link>
-                    </el-col>
-                </el-row>
-                <el-divider></el-divider>
-            </li>
-        </ul>
+    <div id="detailPage">
+        <h1>{{article.title}}</h1>
+        <div id="detailInfo">
+            <span style="margin-right: 5px;">{{article.article_created_time}}</span>
+            <span style="margin-right: 5px;">创建用户</span>
+            <span style="margin-right: 5px;">浏览：{{article.article_view_count}}</span>
+            <span style="margin-right: 5px;">分类</span>
+            <el-button size="mini" @click="back">返回</el-button>
+            <el-button size="mini" @click="handleEdit(article._id)">编辑</el-button>
+            <el-button size="mini" type="danger" @click="handleDelete(article._id)">删除</el-button>
+        </div>
+        <el-divider></el-divider>
+        <span>版权声明</span>
+        <h2>{{article.body}}</h2>
     </div>
 </template>
 
 <style>
-    .el-divider--horizontal{
+    #detailPage .el-divider{
         margin: 7px 0;
     }
 </style>
@@ -49,17 +26,29 @@
     export default {
         data() {
             return {
-                articleList: []
+                article: {}
             }
         },
         methods: {
-            fetch(){
-                this.$http.get('articles').then(res => {
-                    this.articleList = res.data;
+            fetch() {
+                this.$http.get(`/articles/${this.$route.params.id}`).then(res => {
+                    this.article = res.data;
                 })
             },
-            handleDetail(id) {
-                this.$router.push(`/articles/${id}/detail`)
+            handleDelete(id) {
+                this.$http.delete(`articles/${id}`).then(res => {
+                    this.$message({
+                        message: res.data.msg,
+                        type: 'success'
+                    });
+                    this.$router.push(`/articles/list`)
+                })
+            },
+            handleEdit(id) {
+                this.$router.push(`/articles/${id}/edit`)
+            },
+            back(){
+                this.$router.push(`/articles/list`)
             }
         },
         created(){
