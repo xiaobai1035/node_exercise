@@ -7,12 +7,29 @@ app.use(require('cors')())
 
 app.use(express.json())
 
-const { Article, User } = require('./model.js')
+const { Article, User, Comment, Category } = require('./model.js')
 
 const SECRET = 'qwe8iahsfasdhasidasdh'
 
-app.get('/', async(req, res) => {
-    res.send('index');
+// app.get('/', async(req, res) => {
+//     res.send('index');
+// })
+// 新增分类
+app.post('/api/createCategory', async (req, res) => {
+    const category = await Category.create(req.body);
+    res.send(category)
+})
+
+// 获取分类列表
+app.get('/api/categorys', async (req, res) => {
+    const categorys = await Category.find()
+    res.send(categorys)
+})
+
+// 删除分类
+app.delete('/api/categorys/:id', async (req, res) => {
+    await Category.findByIdAndDelete(req.params.id)
+    res.send({msg: 'delete complete'})
 })
 
 // 新增文章
