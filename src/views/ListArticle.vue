@@ -11,7 +11,7 @@
                 </el-row>
                 <el-row>
                     <el-col :sm="12" :md="16">
-                        头像
+                        作者
                     </el-col>
                     <el-col :sm="12" :md="8" style="text-align: right;">
                         <el-link :underline="false" icon="el-icon-view" v-if="item.article_view_count" type="info">
