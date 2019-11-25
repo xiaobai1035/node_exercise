@@ -2,7 +2,7 @@ const mongoose = require('mongoose')
 
 mongoose.connect('mongodb://localhost:27017/element-admin', {
     useNewUrlParser: true,
-    // useFindAndModify: true,
+    useFindAndModify: false,
     useCreateIndex: true,
     useUnifiedTopology: true
 })
